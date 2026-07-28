@@ -41,33 +41,33 @@
 	<script type="module">
 
 		window.viewer = new Potree.Viewer(document.getElementById("potree_render_area"));
-		
-		viewer.setEDLEnabled(false);
+		viewer.setEDLEnabled(true);
 		viewer.setFOV(60);
-		viewer.setPointBudget(1_000_000);
+		viewer.setPointBudget(2_000_000);
+		viewer.setControls(viewer.earthControls);
 		viewer.loadSettingsFromURL();
-		viewer.setBackground("skybox");
+		// viewer.setBackground("skybox");
 		
-		viewer.setDescription("Point cloud courtesy of <a target='_blank' href='https://www.sigeom.ch/'>sigeom sa</a>");
+		viewer.setDescription(
+			"PAN: click and drag, ZOOM: scroll wheel, ORBIT: right-click and drag" +
+			"<br><span style='font-size:small; font-weight:normal;'>If loading has finished but the pointcloud looks incomplete, " +
+			"use <strong>Menu</strong> &rarr; <strong>Appearance</strong> &rarr; <strong>Point Budget</strong>"
+		);
 		
 		viewer.loadGUI(() => {
 			viewer.setLanguage('en');
 			$("#menu_tools").next().show();
 			$("#menu_clipping").next().show();
-			viewer.toggleSidebar();
+			// viewer.toggleSidebar();
 		});
 
 		const params = new URLSearchParams(document.location.search);
 		const pointcloudUrl = params.get("url");
 
-		const baseUrl = pointcloudUrl.substring(0, pointcloudUrl.lastIndexOf('/')+1);
+		console.log(`loadin pointcloud: ${pointcloudUrl}`)
 		const fileName = pointcloudUrl.split("/").pop();
 
-		console.log(baseUrl)
-		console.log(fileName)
-		
 		// Load and add point cloud to scene
-		// Potree.loadPointCloud("../pointclouds/vol_total/cloud.js", "sigeom.sa", e => {
 		Potree.loadPointCloud(pointcloudUrl, fileName, e => {
 			let scene = viewer.scene;
 			let pointcloud = e.pointcloud;
